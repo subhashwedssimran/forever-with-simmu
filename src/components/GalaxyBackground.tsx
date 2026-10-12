@@ -30,9 +30,10 @@ type GalaxyBackgroundProps = {
 }
 
 function makeStars(width: number, height: number): Star[] {
+  const compact = width < 720
   const area = width * height
-  const starCount = Math.max(24, Math.round(area / 32000))
-  const goldCount = Math.max(10, Math.round(area / 78000))
+  const starCount = compact ? 16 : Math.max(24, Math.round(area / 32000))
+  const goldCount = compact ? 5 : Math.max(10, Math.round(area / 78000))
   const stars: Star[] = []
 
   for (let index = 0; index < starCount; index += 1) {
@@ -92,12 +93,19 @@ export function GalaxyBackground({ x, y }: GalaxyBackgroundProps) {
     let nextMeteor = 3.2
     let frame = 0
     let running = true
+    let compact = false
+    let lastWidth = 0
+    let lastHeight = 0
     const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches
 
     const resize = () => {
-      const dpr = Math.min(window.devicePixelRatio || 1, 1.5)
       const width = canvas.clientWidth
       const height = canvas.clientHeight
+      if (lastWidth > 0 && Math.abs(width - lastWidth) < 8 && Math.abs(height - lastHeight) < 8) return
+      lastWidth = width
+      lastHeight = height
+      compact = width < 720
+      const dpr = Math.min(window.devicePixelRatio || 1, compact ? 1.25 : 1.5)
       canvas.width = Math.max(1, Math.floor(width * dpr))
       canvas.height = Math.max(1, Math.floor(height * dpr))
       context.setTransform(dpr, 0, 0, dpr, 0, 0)
@@ -130,7 +138,7 @@ export function GalaxyBackground({ x, y }: GalaxyBackgroundProps) {
           star.base *
           (still ? 0.85 : 0.45 + 0.55 * Math.abs(Math.sin(t * star.tw + star.phase)))
 
-        if (star.gold) {
+        if (star.gold && !compact) {
           const radius = star.r * 7
           const glow = context.createRadialGradient(drawX, drawY, 0, drawX, drawY, radius)
           glow.addColorStop(0, `rgba(255, 214, 160, ${alpha})`)
@@ -167,7 +175,7 @@ export function GalaxyBackground({ x, y }: GalaxyBackgroundProps) {
         const age = t - meteor.born
         if (age > meteor.life) {
           meteor = null
-          nextMeteor = t + 8 + Math.random() * 7
+          nextMeteor = t + (compact ? 16 : 8) + Math.random() * 7
         } else {
           const fade = 1 - age / meteor.life
           const headX = meteor.x + meteor.vx * age
@@ -214,19 +222,19 @@ export function GalaxyBackground({ x, y }: GalaxyBackgroundProps) {
     <div className="absolute inset-0 overflow-hidden bg-[#07010f]" aria-hidden="true">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,#6a2a62_0%,#2a1028_42%,#07010f_78%)]" />
       <motion.div
-        className="absolute top-[12%] -left-[8%] h-[48vh] w-[48vh] rounded-full bg-[#e15b92]/30 blur-3xl"
+        className="absolute top-[12%] -left-[8%] h-[42svh] w-[42svh] rounded-full bg-[#e15b92]/30 blur-xl sm:h-[48vh] sm:w-[48vh] sm:blur-3xl"
         style={{ x: mistX, y: mistY }}
         animate={reduce ? undefined : { opacity: [0.45, 0.8, 0.45] }}
         transition={{ duration: 14, repeat: Infinity, ease: "easeInOut" }}
       />
       <motion.div
-        className="absolute right-[-6%] bottom-[6%] h-[42vh] w-[42vh] rounded-full bg-[#7d4dff]/25 blur-3xl"
+        className="absolute right-[-6%] bottom-[6%] h-[36svh] w-[36svh] rounded-full bg-[#7d4dff]/25 blur-xl sm:h-[42vh] sm:w-[42vh] sm:blur-3xl"
         style={{ x: nebulaX, y: nebulaY }}
         animate={reduce ? undefined : { opacity: [0.4, 0.7, 0.4] }}
         transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
       />
       <motion.div
-        className="absolute top-[40%] left-1/2 h-[46vh] w-[46vh] -translate-x-1/2 -translate-y-1/2 rounded-full blur-3xl"
+        className="absolute top-[40%] left-1/2 h-[40svh] w-[40svh] -translate-x-1/2 -translate-y-1/2 rounded-full blur-xl sm:h-[46vh] sm:w-[46vh] sm:blur-3xl"
         style={{
           background:
             "radial-gradient(circle, rgba(255,186,206,0.28) 0%, rgba(176,84,140,0.12) 46%, transparent 72%)",

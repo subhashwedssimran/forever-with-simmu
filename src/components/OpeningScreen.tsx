@@ -9,11 +9,11 @@ import { useParallax } from "../hooks/useParallax"
 export function OpeningScreen() {
   const { lang, t } = useLanguage()
   const reduce = useReducedMotion()
-  const parallax = useParallax()
+  const parallax = useParallax({ driftOnCoarsePointer: false })
   const hindi = lang === "hi"
 
   return (
-    <section className="relative h-dvh w-full overflow-hidden">
+    <section className="relative h-svh w-full max-w-full overflow-hidden">
       <GalaxyBackground x={parallax.x} y={parallax.y} />
 
       <header className="absolute inset-x-0 top-0 z-30 flex items-start justify-between gap-3 px-4 pt-[max(0.85rem,env(safe-area-inset-top))] sm:px-8">

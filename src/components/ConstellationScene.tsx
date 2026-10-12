@@ -2,6 +2,7 @@ import { useEffect, useId, useState } from "react"
 import { AnimatePresence, motion, useReducedMotion } from "motion/react"
 import type { StarId } from "../i18n/copy"
 import { useLanguage } from "../context/LanguageContext"
+import { asset } from "../lib/asset"
 import { NightSky } from "./NightSky"
 import { SceneControls } from "./SceneControls"
 
@@ -13,6 +14,12 @@ const STARS: { id: StarId; x: number; y: number }[] = [
   { id: "moments", x: 73, y: 36 },
   { id: "forever", x: 50, y: 74 },
 ]
+
+const MEMORY_PHOTOS: Record<StarId, { src: string; focus: string; ratio: string }> = {
+  beginning: { src: asset("images/memory-beginning.jpg"), focus: "center 64%", ratio: "4 / 3" },
+  moments: { src: asset("images/memory-moments.jpg"), focus: "center", ratio: "16 / 10" },
+  forever: { src: asset("images/memory-forever.jpg"), focus: "center 58%", ratio: "4 / 3" },
+}
 
 const DUST = [
   { x: 50, y: 30 },
@@ -158,6 +165,16 @@ export function ConstellationScene({
                 />
               ))}
             </svg>
+            {complete ? (
+              <motion.p
+                initial={reduce ? false : { opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: reduce ? 0 : 1.7, duration: reduce ? 0.2 : 1.15, ease: "easeOut" }}
+                className="pointer-events-none absolute top-[48%] left-1/2 z-20 -translate-x-1/2 -translate-y-1/2 font-script text-[clamp(1.2rem,3.5vw,1.65rem)] leading-none text-[#f3d7b0] [text-shadow:0_0_10px_rgba(243,215,176,0.8),0_0_18px_rgba(232,186,140,0.35)]"
+              >
+                Simran
+              </motion.p>
+            ) : null}
 
             {STARS.map((star) => {
               const lit = opened.includes(star.id)
@@ -281,15 +298,15 @@ export function ConstellationScene({
                   {t.close}
                 </button>
               </div>
-              <div className="memory-photo relative mt-4 overflow-hidden rounded-2xl">
-                <div className="absolute inset-3 border border-[#f0d2b4]/25" />
-                <p
-                  className={`absolute inset-0 flex items-center justify-center px-8 text-center text-sm text-ivory/75 ${
-                    hindi ? "font-hindi" : "font-display"
-                  }`}
-                >
-                  {t.photoLabel}
-                </p>
+              <div className="memory-photo relative mt-4 overflow-hidden rounded-2xl" style={{ aspectRatio: MEMORY_PHOTOS[active].ratio }}>
+                <img
+                  src={MEMORY_PHOTOS[active].src}
+                  alt={memory.photoAlt}
+                  draggable={false}
+                  className="h-full w-full object-cover"
+                  style={{ objectPosition: MEMORY_PHOTOS[active].focus }}
+                />
+                <div className="pointer-events-none absolute inset-3 border border-[#f0d2b4]/40" />
               </div>
               <p
                 className={`mt-4 text-[1.02rem] leading-relaxed text-ivory/90 sm:text-[1.08rem] ${

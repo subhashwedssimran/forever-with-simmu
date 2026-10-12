@@ -72,14 +72,17 @@ export const copy = {
       beginning: {
         title: "Our Beginning",
         message: "The day our story began will always be one of my favorite memories.",
+        photoAlt: "Our wedding, in traditional attire.",
       },
       moments: {
         title: "Our Beautiful Moments",
         message: "Every little moment with you becomes a beautiful memory I want to keep forever.",
+        photoAlt: "Our hands held together.",
       },
       forever: {
         title: "Our Forever",
         message: "No matter how many chapters life brings, my favorite future will always be with you.",
+        photoAlt: "Together, with Simmu in a pink saree.",
       },
     },
   },
@@ -154,14 +157,17 @@ export const copy = {
       beginning: {
         title: "हमारी शुरुआत",
         message: "जिस दिन हमारी कहानी शुरू हुई, वह याद हमेशा मेरी सबसे प्रिय यादों में रहेगी।",
+        photoAlt: "हमारी शादी, पारंपरिक परिधान में।",
       },
       moments: {
         title: "हमारे ख़ूबसूरत पल",
         message: "तुम्हारे साथ का हर छोटा पल एक ख़ूबसूरत याद बन जाता है, जिसे मैं सदा संजोना चाहता हूँ।",
+        photoAlt: "हमारे हाथ एक-दूसरे में।",
       },
       forever: {
         title: "हमारा हमेशा",
         message: "जीवन कितने भी अध्याय लाए, मेरा सबसे प्रिय भविष्य हमेशा तुम्हारे साथ ही होगा।",
+        photoAlt: "हम दोनों साथ, सिम्मू गुलाबी साड़ी में।",
       },
     },
   },

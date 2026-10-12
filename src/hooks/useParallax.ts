@@ -6,7 +6,13 @@ type Parallax = {
   y: MotionValue<number>
 }
 
-export function useParallax(): Parallax {
+type ParallaxOptions = {
+  /** Touch screens have no hover pointer. A stand-in sine wave was shaking the opening heart. */
+  driftOnCoarsePointer?: boolean
+}
+
+export function useParallax(options?: ParallaxOptions): Parallax {
+  const driftOnCoarsePointer = options?.driftOnCoarsePointer ?? true
   const x = useMotionValue(0)
   const y = useMotionValue(0)
   const springX = useSpring(x, { stiffness: 28, damping: 20, mass: 0.7 })
@@ -26,6 +32,8 @@ export function useParallax(): Parallax {
       return () => window.removeEventListener("pointermove", onMove)
     }
 
+    if (!driftOnCoarsePointer) return
+
     let frame = 0
     const start = performance.now()
     const loop = (now: number) => {
@@ -36,7 +44,7 @@ export function useParallax(): Parallax {
     }
     frame = requestAnimationFrame(loop)
     return () => cancelAnimationFrame(frame)
-  }, [x, y])
+  }, [driftOnCoarsePointer, x, y])
 
   return { x: springX, y: springY }
 }

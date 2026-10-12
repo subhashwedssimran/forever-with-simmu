@@ -28,6 +28,7 @@ export function CrystalHeart({ x, y }: CrystalHeartProps) {
   const glowId = useId().replace(/:/g, "")
   const [loaded, setLoaded] = useState(false)
   const [failed, setFailed] = useState(false)
+  const [finePointer, setFinePointer] = useState(false)
   const shiftX = useTransform(x, (value) => value * 28)
   const shiftY = useTransform(y, (value) => value * 16)
   const tiltX = useTransform(y, (value) => value * -6)
@@ -39,12 +40,27 @@ export function CrystalHeart({ x, y }: CrystalHeartProps) {
     if (image.complete && image.naturalWidth > 0) setLoaded(true)
   }, [])
 
+  useEffect(() => {
+    const query = window.matchMedia("(pointer: fine)")
+    const sync = () => setFinePointer(query.matches)
+    sync()
+    query.addEventListener("change", sync)
+    return () => query.removeEventListener("change", sync)
+  }, [])
+
   return (
     <div className="flex h-full min-h-0 w-full items-center justify-center">
-      <div className="relative h-full max-h-[min(42vh,460px)] w-full max-w-[520px]" style={{ perspective: 1200 }}>
+      <div
+        className="relative h-full max-h-[min(42svh,460px)] w-full max-w-[520px]"
+        style={finePointer ? { perspective: 1200 } : undefined}
+      >
         <motion.div
           className="relative h-full w-full"
-          style={{ x: shiftX, y: shiftY, rotateX: tiltX, rotateY: tiltY, transformStyle: "preserve-3d" }}
+          style={
+            finePointer
+              ? { x: shiftX, y: shiftY, rotateX: tiltX, rotateY: tiltY, transformStyle: "preserve-3d" }
+              : undefined
+          }
         >
           <motion.div
             className="relative h-full w-full"
@@ -53,7 +69,7 @@ export function CrystalHeart({ x, y }: CrystalHeartProps) {
           >
             <motion.div
               aria-hidden="true"
-              className="absolute top-[16%] left-1/2 h-[70%] w-[74%] -translate-x-1/2 rounded-full blur-3xl"
+              className="absolute top-[16%] left-1/2 h-[70%] w-[74%] -translate-x-1/2 rounded-full blur-xl sm:blur-3xl"
               style={{
                 background:
                   "radial-gradient(circle, rgba(255,206,164,0.55) 0%, rgba(232,126,176,0.28) 34%, rgba(92,36,120,0.08) 58%, transparent 74%)",
@@ -74,7 +90,7 @@ export function CrystalHeart({ x, y }: CrystalHeartProps) {
                   alt=""
                   aria-hidden="true"
                   draggable={false}
-                  className="pointer-events-none absolute inset-0 h-full w-full scale-105 object-contain opacity-0 blur-2xl"
+                  className="pointer-events-none absolute inset-0 hidden h-full w-full scale-105 object-contain opacity-0 blur-xl sm:block sm:blur-2xl"
                   animate={{ opacity: loaded ? 0.28 : 0 }}
                   transition={{ duration: 1.1, ease: "easeOut" }}
                 />
